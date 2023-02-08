@@ -45,7 +45,7 @@ class MainMenu(QWidget):
                      user = user_name,
                      password = passwd,
                      port = db_port)
-
+        
         cursor = db.cursor()
         db.commit()
 
