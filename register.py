@@ -36,9 +36,9 @@ class MainMenu(QWidget):
         self.login.show()
     
     def connect_to_register():
-        host_name = 'orbit-simulator.cvwquqtl5fz5.eu-central-1.rds.amazonaws.com'
-        user_name = 'register'
-        passwd = 'register'
+        host_name = 'localhost'
+        user_name = 'root'
+        passwd = 'Password1'
         db_port = 3306
         
         db = pymysql.connect(host = host_name,
@@ -55,9 +55,4 @@ if __name__ == "__main__":
     win.show()
     app.exec_()
 
-# print("Follow the steps to complete your account: \n")
-# print("First name: \n")
-# print("Last name: \n")
-# print("Email: \n")
-# print("User name: \n")
-# print("Password(min. 6 symbols, at least one uppercase letter, one lowercase letter, one number and one special symbol): \n")
+
