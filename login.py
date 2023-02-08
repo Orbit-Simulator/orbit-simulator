@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
-import sys, pymysql
+import sys, pymysql, aws_sql_conn
 
 
 
@@ -16,11 +16,6 @@ class Login(QWidget):
         self.user_name_box = QLineEdit(self)
         self.user_name_box.setGeometry(280, 105, 150, 30)
         self.user_name_box.show()
-
-        # # Email input
-        # self.email_address = QLineEdit(self)
-        # self.email_address.setGeometry(280, 155, 150, 30)
-        # self.email_address.show()
     
         # Password input
         self.password_input = QLineEdit(self)
@@ -40,19 +35,7 @@ class Login(QWidget):
         self.register.setText("Create Account")
         self.register.show()
     
-    def connect_to_sql():
-        host_name = 'localhost'
-        user_name = 'root'
-        passwd = 'Password1'
-        db_port = 3306
-        
-        db = pymysql.connect(host = host_name,
-                     user = user_name,
-                     password = passwd,
-                     port = db_port)
 
-        cursor = db.cursor()
-        db.commit()
 
 if __name__ == "__main__":            
     app = QApplication(sys.argv)
