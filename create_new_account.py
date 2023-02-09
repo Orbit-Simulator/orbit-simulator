@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
-import sys, pymysql, aws_sql_conn as awsdb
-import register
+import sys, pymysql, random
+import aws_sql_conn as awsdb
+
 
 class Signin(QWidget):
     def __init__(self):
@@ -27,18 +28,39 @@ class Signin(QWidget):
         self.password_input.setGeometry(220, 205, 300, 30)
         self.password_input.show()
         
-        #Back to Main Menu Button
-        self.login = QPushButton(self)
+        #Create a new account button
+        self.login = QPushButton(self, clicked=self.create_account)
         self.login.setGeometry(290, 255, 150, 30)
         self.login.setText("Create Account")
         self.login.show()
         
-        #Create accout button
-        self.register = QPushButton(self, clicked=register.create_account(self.user_name_input.text(), self.password_input.text(), self.email_address.text()))
+        #Back to Main Menu button
+        self.register = QPushButton(self)
         self.register.setGeometry(290, 305, 150, 30)
         self.register.setText("Back to Main Menu")
         self.register.show()
-
+    
+    
+    def create_account(self):
+        user_name = self.user_name_input.text()
+        email = self.email_address.text()
+        db = awsdb.db
+        cursor = db.cursor()
+        with cursor:
+            create_new_user_query = """INSERT INTO users VALUES (%s, %s, %s);"""
+            cursor.execute(create_new_user_query, (Signin.generate_user_id(self), user_name, email))
+            db.commit()
+            
+    def generate_user_id(self):
+        user_id = []
+        length = 10
+        for i in range(length):
+            if i < 3:
+                user_id.append(chr(random.randrange(65,90)))
+            else:
+                user_id.append(chr(random.randrange(48,57)))
+        return ''.join(user_id)
+                
 
 
 if __name__ == "__main__":            
