@@ -44,11 +44,14 @@ class Signin(QWidget):
     def create_account(self):
         user_name = self.user_name_input.text()
         email = self.email_address.text()
+        passwd = self.password_input.text()
         db = awsdb.db
         cursor = db.cursor()
         with cursor:
             create_new_user_query = """INSERT INTO users VALUES (%s, %s, %s);"""
             cursor.execute(create_new_user_query, (Signin.generate_user_id(self), user_name, email))
+            create_new_user_query = """CREATE USER %s IDENTIFIED BY %s"""
+            cursor.execute(create_new_user_query, (user_name, passwd))
             db.commit()
             
     def generate_user_id(self):
