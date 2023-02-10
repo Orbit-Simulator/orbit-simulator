@@ -9,35 +9,47 @@ class Signin(QWidget):
         super().__init__()
         self.setWindowTitle("Orbit Simulator - Create New Account")
         self.setWindowIcon(QIcon(r'images/satellite.png'))
-        self.setFixedSize(700, 400)
+        self.setFixedSize(900, 600)
         self.show()
                                             
         # User name input
         self.user_name_input = QLineEdit(self)
-        self.user_name_input.setGeometry(220, 105, 300, 30)
+        self.user_name_input.setGeometry(300, 250, 300, 30)
+        self.user_name_text = QLabel(self)
+        self.user_name_text.setText("User Name")
+        self.user_name_text.setGeometry(300, 220, 330, 30)
+        self.user_name_text.show()
         self.user_name_input.show()
 
         # Email input
         self.email_address = QLineEdit(self)
-        self.email_address.setGeometry(220, 155, 300, 30)
+        self.email_address.setGeometry(300, 330, 300, 30)
+        self.email_address_text = QLabel(self)
+        self.email_address_text.setText("Email Address")
+        self.email_address_text.setGeometry(300, 300, 330, 30)
+        self.email_address_text.show()
         self.email_address.show()
     
         # Password input
         self.password_input = QLineEdit(self)
         self.password_input.setEchoMode(QLineEdit.Password)
-        self.password_input.setGeometry(220, 205, 300, 30)
+        self.password_input.setGeometry(300, 410, 300, 30)
+        self.password_text = QLabel(self)
+        self.password_text.setText("Password")
+        self.password_text.setGeometry(300, 380, 500, 30)
+        self.password_text.show()
         self.password_input.show()
         
         #Create a new account button
         self.login = QPushButton(self, clicked=self.create_account)
-        self.login.setGeometry(290, 255, 170, 30)
+        self.login.setGeometry(300, 450, 170, 30)
         self.login.setText("Create Account")
         self.login.show()
         
         #Back to Main Menu button
         self.register = QPushButton(self)
-        self.register.setGeometry(290, 305, 170, 30)
-        self.register.setText("Back to Main Menu")
+        self.register.setGeometry(480, 450, 120, 30)
+        self.register.setText("Main Menu")
         self.register.show()
     
     
@@ -74,7 +86,7 @@ class Signin(QWidget):
                 
     def check_user_name(self):
         to_check = self.user_name_input.text()
-        if 6 < len(to_check) < 15:
+        if 6 < len(to_check) < 20:
             return True
         else:
             return False
