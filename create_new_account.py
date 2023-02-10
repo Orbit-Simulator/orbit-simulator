@@ -86,7 +86,7 @@ class Signin(QWidget):
                 
     def check_user_name(self):
         to_check = self.user_name_input.text()
-        if 6 < len(to_check) < 20:
+        if 6 <= len(to_check) < 20:
             return True
         else:
             return False
@@ -100,11 +100,11 @@ class Signin(QWidget):
                 return False
             elif not re.search("[a-z]", to_check):
                 return False
-            elif not re.seach("[0-9]", to_check):
+            elif not re.search("[0-9]", to_check):
                 return False
-            elif not re.search("[!@\#$%&')(*+`-./]", to_check):
+            elif not re.search("[!@\#$%&')(*+`./]", to_check):
                 return False
-            elif re.seach("\s", to_check):
+            elif re.search("\s", to_check):
                 return False
             else:
                 return True
