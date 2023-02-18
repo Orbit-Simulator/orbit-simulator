@@ -69,9 +69,10 @@ class Signin(QWidget):
                 create_new_user_query = """CREATE USER %s IDENTIFIED BY %s"""
                 cursor.execute(create_new_user_query, (user_name, passwd))
                 db.commit()
+                Signin.account_created(self)
         else:
             Signin.error_handling(self)
-            # Insert error handling function
+            
             
     def generate_user_id(self):
         user_id = []
@@ -89,14 +90,16 @@ class Signin(QWidget):
                 generate_user_id()
             else:
                 return ''.join(user_id)
-                
-    def check_user_name(self):
+    
+    # Function verifies if the user name is in correct format           
+    def check_user_name(self): 
         to_check = self.user_name_input.text()
         if 6 <= len(to_check) <= 20:
             return True
         else:
             return False
-
+    
+    # Function verifies if the password is in correct format
     def check_password(self):
         to_check = self.password_input.text()
         while True:
@@ -115,6 +118,7 @@ class Signin(QWidget):
             else:
                 return True
                 
+    # Function verifies if the email is correct
     def check_email(self):
         to_check = self.email_address.text()
         if re.search("^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$", to_check):
@@ -122,23 +126,32 @@ class Signin(QWidget):
         else:
             return False
 
+    # Pop-up window with feedback when any of the input(username, passwd, email) is incorrect
     def error_handling(self):
         message_box = QMessageBox(self)
         message_box.setWindowTitle("Error during creating new account")
         message_box.setText("Please check and fix the following issues: ")
+        message_box.setIcon(QMessageBox.Critical)
+        message_box.setStandardButtons(QMessageBox.Ok)
         details_msg = []
         
-
         if Signin.check_user_name(self) == False:
             details_msg.append("User name must be between 6 and 20 characters long.\n")
         if Signin.check_password(self) == False:
             details_msg.append("Password must be at least 6 characters long, containing one upper case letter, one lowercase letter, one number and one special symbol.\n")
         if Signin.check_email(self) == False:
             details_msg.append("Invalid email address.\n")
+
         message_box.setDetailedText(''.join(details_msg))
-        message_box.setIcon(QMessageBox.Critical)
-        message_box.setStandardButtons(QMessageBox.Ok)
         x = message_box.exec()
+    
+    # Inform the user that the account has been created succesfully
+    def account_created(self):
+        succesfull_acc = QLabel(self)
+        succesfull_acc.setText("Your account has been created succesfully!")
+        succesfull_acc.setGeometry(300, 500, 400, 30)
+        succesfull_acc.show()
+
             
 
 if __name__ == "__main__":            
