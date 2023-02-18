@@ -43,16 +43,16 @@ class Signin(QWidget):
         self.password_input.show()
         
         #Create a new account button
-        self.login = QPushButton(self, clicked=self.create_account)
-        self.login.setGeometry(300, 450, 170, 30)
-        self.login.setText("Create Account")
-        self.login.show()
+        self.new_acc = QPushButton(self, clicked=self.create_account)
+        self.new_acc.setGeometry(300, 450, 170, 30)
+        self.new_acc.setText("Create Account")
+        self.new_acc.show()
         
         #Back to Main Menu button
-        self.register = QPushButton(self)
-        self.register.setGeometry(480, 450, 120, 30)
-        self.register.setText("Main Menu")
-        self.register.show()
+        self.main_menu = QPushButton(self)
+        self.main_menu.setGeometry(480, 450, 120, 30)
+        self.main_menu.setText("Main Menu")
+        self.main_menu.show()
     
     
     def create_account(self):
@@ -70,6 +70,8 @@ class Signin(QWidget):
                 cursor.execute(create_new_user_query, (user_name, passwd))
                 db.commit()
                 Signin.account_created(self)
+                Signin.main_menu(self).hide()
+
         else:
             Signin.error_handling(self)
             
