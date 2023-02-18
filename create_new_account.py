@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
 import sys, pymysql, random, re
@@ -57,7 +59,8 @@ class Signin(QWidget):
         user_name = self.user_name_input.text()
         email = self.email_address.text()
         passwd = self.password_input.text()
-        if Signin.check_user_name(self) == True and Signin.check_password(self) == True:
+        if Signin.check_user_name(self) == True and Signin.check_password(self) == True \
+            and Signin.check_email(self) == True:
             db = awsdb.db
             cursor = db.cursor()
             with cursor:
@@ -66,6 +69,9 @@ class Signin(QWidget):
                 create_new_user_query = """CREATE USER %s IDENTIFIED BY %s"""
                 cursor.execute(create_new_user_query, (user_name, passwd))
                 db.commit()
+        else:
+            Signin.error_handling(self)
+            # Insert error handling function
             
     def generate_user_id(self):
         user_id = []
@@ -86,7 +92,7 @@ class Signin(QWidget):
                 
     def check_user_name(self):
         to_check = self.user_name_input.text()
-        if 6 <= len(to_check) < 20:
+        if 6 <= len(to_check) <= 20:
             return True
         else:
             return False
@@ -110,7 +116,29 @@ class Signin(QWidget):
                 return True
                 
     def check_email(self):
-        pass
+        to_check = self.email_address.text()
+        if re.search("^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$", to_check):
+            return True
+        else:
+            return False
+
+    def error_handling(self):
+        message_box = QMessageBox(self)
+        message_box.setWindowTitle("Error during creating new account")
+        message_box.setText("Please check and fix the following issues: ")
+        details_msg = []
+        
+
+        if Signin.check_user_name(self) == False:
+            details_msg.append("User name must be between 6 and 20 characters long.\n")
+        if Signin.check_password(self) == False:
+            details_msg.append("Password must be at least 6 characters long, containing one upper case letter, one lowercase letter, one number and one special symbol.\n")
+        if Signin.check_email(self) == False:
+            details_msg.append("Invalid email address.\n")
+        message_box.setDetailedText(''.join(details_msg))
+        message_box.setIcon(QMessageBox.Critical)
+        message_box.setStandardButtons(QMessageBox.Ok)
+        x = message_box.exec()
             
 
 if __name__ == "__main__":            
