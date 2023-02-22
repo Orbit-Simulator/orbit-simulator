@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
 import sys, random, re
-import servicenow.servicenow_auth as servicenow_auth
+
 
 
 
