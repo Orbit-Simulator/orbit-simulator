@@ -2,7 +2,7 @@
 
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
-import sys, pymysql, aws_sql_conn
+import sys, pymysql, back_up.aws_sql_conn as aws_sql_conn
 
 
 

@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
 import sys, pymysql, random, re
-import aws_sql_conn as awsdb
+import back_up.aws_sql_conn as awsdb
 
 
 class Signin(QWidget):
