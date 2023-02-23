@@ -1,10 +1,9 @@
 #!/usr/bin/python3
-
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
 import sys, random, re
-
-
+import servicenow_auth
+from datetime import datetime
 
 
 class Signin(QWidget):
@@ -44,7 +43,10 @@ class Signin(QWidget):
         self.password_input.show()
         
         #Create a new account button
-        self.new_acc = QPushButton(self)
+        user = self.user_name_input.text()
+        passwd = self.password_input.text()
+        email = self.email_address.text()
+        self.new_acc = QPushButton(self, clicked = self.create_user)
         self.new_acc.setGeometry(300, 450, 170, 30)
         self.new_acc.setText("Create Account")
         self.new_acc.show()
@@ -55,6 +57,24 @@ class Signin(QWidget):
         self.main_menu.setText("Main Menu")
         self.main_menu.show()
     
+    # Register new user in Orbit Simulator Users Table && CMDB Users Table
+    def create_user(self):
+        gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+        gr.initialize()
+        gr.u_user_name = self.user_name_input.text()
+        gr.u_password = self.password_input.text()
+        gr.u_email_address = self.email_address.text()
+        gr.u_date_created = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        gr.insert()
+        
+        gr = servicenow_auth.client.GlideRecord('sys_user')
+        gr.initialize()
+        gr.user_name = self.user_name_input.text()
+        gr.user_password = self.password_input.text()
+        gr.email = self.email_address.text()
+        gr.sys_created_on = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        gr.name = f'Orbit Simulator - {self.user_name_input.text()}'
+        gr.insert()
     
 
 
