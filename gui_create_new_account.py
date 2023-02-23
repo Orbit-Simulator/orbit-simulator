@@ -43,9 +43,6 @@ class Signin(QWidget):
         self.password_input.show()
         
         #Create a new account button
-        user = self.user_name_input.text()
-        passwd = self.password_input.text()
-        email = self.email_address.text()
         self.new_acc = QPushButton(self, clicked = self.create_user)
         self.new_acc.setGeometry(300, 450, 170, 30)
         self.new_acc.setText("Create Account")
@@ -59,23 +56,29 @@ class Signin(QWidget):
     
     # Register new user in Orbit Simulator Users Table && CMDB Users Table
     def create_user(self):
-        gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
-        gr.initialize()
-        gr.u_id = Signin.generate_user_id(self)
-        gr.u_user_name = self.user_name_input.text()
-        gr.u_password = self.password_input.text()
-        gr.u_email_address = self.email_address.text()
-        gr.u_date_created = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-        gr.insert()
-        
-        gr = servicenow_auth.client.GlideRecord('sys_user')
-        gr.initialize()
-        gr.user_name = self.user_name_input.text()
-        gr.user_password = self.password_input.text()
-        gr.email = self.email_address.text()
-        gr.sys_created_on = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-        gr.name = f'Orbit Simulator - {self.user_name_input.text()}'
-        gr.insert()
+        if Signin.check_unique_username(self) == True and\
+            Signin.check_valid_username(self) == True and\
+                Signin.check_password(self) == True and\
+                    Signin.check_email(self) == True:
+            gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+            gr.initialize()
+            gr.u_id = Signin.generate_user_id(self)
+            gr.u_user_name = self.user_name_input.text()
+            gr.u_password = self.password_input.text()
+            gr.u_email_address = self.email_address.text()
+            gr.u_date_created = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+            gr.insert()
+            
+            gr = servicenow_auth.client.GlideRecord('sys_user')
+            gr.initialize()
+            gr.user_name = self.user_name_input.text()
+            gr.user_password = self.password_input.text()
+            gr.email = self.email_address.text()
+            gr.sys_created_on = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+            gr.name = f'Orbit Simulator - {self.user_name_input.text()}'
+            gr.insert()
+        else:
+            Signin.error_handling(self)
     
     # Generate new user unique ID
     def generate_user_id(self):
@@ -96,8 +99,71 @@ class Signin(QWidget):
             else:
                 return user_id
 
+    # Check if user name is unique
+    def check_unique_username(self):
+        gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+        gr.query()
+        for username in gr:
+            to_check = gr.get_value('u_user_name')
+            if to_check == self.user_name_input.text():
+                return False
+            else:
+                return True
     
+    # Check if username is valid
+    def check_valid_username(self):
+        if len(self.user_name_input.text()) < 6:
+            return False
+        else:
+            return True
+    
+    # Check if password is valid
+    def check_password(self):
+        to_check = self.password_input.text()
+        while True:
+            if (len(to_check)) < 6:
+                return False
+            elif not re.search("[A-Z]", to_check):
+                return False
+            elif not re.search("[a-z]", to_check):
+                return False
+            elif not re.search("[0-9]", to_check):
+                return False
+            elif not re.search("[!@\#$%&')(*+`./]", to_check):
+                return False
+            elif re.search("\s", to_check):
+                return False
+            else:
+                return True
+    
+    # Check if email is valid
+    def check_email(self):
+        to_check = self.email_address.text()
+        if re.search("^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$", to_check):
+            return True
+        else:
+            return False        
 
+    # Pop-up window with error messages
+    def error_handling(self):
+        message_box = QMessageBox(self)
+        message_box.setWindowTitle("Error during creating new account")
+        message_box.setText("Please check and fix the following issues:")
+        message_box.setIcon(QMessageBox.Critical)
+        message_box.setStandardButtons(QMessageBox.Ok)
+        details_msg = []
+        
+        if Signin.check_unique_username(self) == False:
+            details_msg.append("Username already exists\n")
+        if Signin.check_valid_username(self) == False:
+            details_msg.append("Invalid username. Username must be at least 6 characters\n")
+        if Signin.check_password(self) == False:
+            details_msg.append("Password must be at least 6 characters long, containing one upper case letter, one lowercase letter, one number and one special symbol.\n")
+        if Signin.check_email(self) == False:
+            details_msg.append("Invalid email address\n")
+        
+        message_box.setDetailedText(''.join(details_msg))
+        x = message_box.exec()
 
             
 
