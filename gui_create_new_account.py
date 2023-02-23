@@ -61,6 +61,7 @@ class Signin(QWidget):
     def create_user(self):
         gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
         gr.initialize()
+        gr.u_id = Signin.generate_user_id(self)
         gr.u_user_name = self.user_name_input.text()
         gr.u_password = self.password_input.text()
         gr.u_email_address = self.email_address.text()
@@ -75,6 +76,26 @@ class Signin(QWidget):
         gr.sys_created_on = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         gr.name = f'Orbit Simulator - {self.user_name_input.text()}'
         gr.insert()
+    
+    # Generate new user unique ID
+    def generate_user_id(self):
+        user_id = []
+        length = 10 
+        for i in range(length):
+            if i < 3:
+                user_id.append(chr(random.randrange(65,90)))
+            else:
+                user_id.append(chr(random.randrange(48,57)))
+        user_id = ''.join(user_id)
+        gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+        gr.query()
+        for user in gr:
+            to_check = gr.get_value('u_id')
+            if to_check == user_id:
+                Signin.generate_user_id(self)
+            else:
+                return user_id
+
     
 
 
