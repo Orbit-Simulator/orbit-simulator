@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QMessageBox, QPlainTextEdit)
 from PyQt5.QtGui import (QIcon, QPixmap)
 import sys, random, re
-import servicenow_auth
+import servicenow_admin_auth
 from datetime import datetime
 
 
@@ -60,7 +60,7 @@ class Signin(QWidget):
             Signin.check_valid_username(self) == True and\
                 Signin.check_password(self) == True and\
                     Signin.check_email(self) == True:
-            gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+            gr = servicenow_admin_auth.client.GlideRecord('u_orbit_simulator_users')
             gr.initialize()
             gr.u_id = Signin.generate_user_id(self)
             gr.u_user_name = self.user_name_input.text()
@@ -69,7 +69,7 @@ class Signin(QWidget):
             gr.u_date_created = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             gr.insert()
             
-            gr = servicenow_auth.client.GlideRecord('sys_user')
+            gr = servicenow_admin_auth.client.GlideRecord('sys_user')
             gr.initialize()
             gr.user_name = self.user_name_input.text()
             gr.user_password = self.password_input.text()
@@ -90,7 +90,7 @@ class Signin(QWidget):
             else:
                 user_id.append(chr(random.randrange(48,57)))
         user_id = ''.join(user_id)
-        gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+        gr = servicenow_admin_auth.client.GlideRecord('u_orbit_simulator_users')
         gr.query()
         for user in gr:
             to_check = gr.get_value('u_id')
@@ -101,7 +101,7 @@ class Signin(QWidget):
 
     # Check if user name is unique
     def check_unique_username(self):
-        gr = servicenow_auth.client.GlideRecord('u_orbit_simulator_users')
+        gr = servicenow_admin_auth.client.GlideRecord('u_orbit_simulator_users')
         gr.query()
         for username in gr:
             to_check = gr.get_value('u_user_name')
