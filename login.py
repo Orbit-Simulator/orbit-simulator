@@ -31,7 +31,7 @@ class Login(QWidget):
         self.password_text.show()
         self.password_input.show()
         
-        #Login button
+        # Login button
         self.new_acc = QPushButton(self)
         self.new_acc.setGeometry(300, 450, 170, 30)
         self.new_acc.setText("Login")
@@ -48,6 +48,7 @@ class Login(QWidget):
         user_client = ServiceNowClient('https://dev109438.service-now.com/',
                                        self.user_name_input.text(),
                                        self.password_input.text())
+        return user_client
     
 
 
